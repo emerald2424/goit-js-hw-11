@@ -1,6 +1,6 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import "notiflix/dist/notiflix-3.2.6.min.css";
-// import debounce from 'lodash.debounce';
+import axios from "axios";
 
 const searchForm = document.querySelector('#search-form');
 const input = document.querySelector('input[name="searchQuery"]')
