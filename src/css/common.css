@@ -14,7 +14,13 @@ body {
 
 img {
   display: block;
+  /* overflow-clip-margin: content-box; */
+  /* overflow: hidden; */
   /* max-width: 100%; */
+}
+
+a {
+  text-decoration: none;
 }
 
 .gallery {
@@ -26,33 +32,33 @@ img {
   justify-content: center;
   margin-left: auto;
   margin-right: auto;
+  /* display: flex;
+  gap: 12px; */
 }
 
 .search-form {
   display: flex;
   gap: 10px;
   justify-content: center;
-  /* flex-direction: column; */
-  /* margin: 0 auto; */
   padding: 15px;
   background-color: rgb(88, 162, 162);
 }
 
 .photo-card {
-  /* position: relative; */
+  background-color: rgb(246, 250, 254);
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
     0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 }
 
 .info {
   display: flex;
+  justify-content: space-around;
 }
 
-b {
-  font-weight: 500px;
-}
+.info-item {
+  text-align: center;
+  font-size: 16px;
+  color: #212121;
 
-/* .info-item {
-  display: flex;
-  flex-direction: column;
-} */
+  /* text-decoration-color: black; */
+}
