@@ -1,4 +1,4 @@
-import './common.css'
+import './css/common.css'
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import "notiflix/dist/notiflix-3.2.6.min.css";
 import axios from "axios";
