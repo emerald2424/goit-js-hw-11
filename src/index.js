@@ -26,38 +26,50 @@ let observerOptions = {
 }
 let observer = new IntersectionObserver(onLoad, observerOptions);
 
-function onSearch(evt) {
+async function onSearch(evt) {
     evt.preventDefault();
+    
+    loadMoreBtn.hidden = true;
+    loadMoreBtn.classList.remove('load-btn-visible');
+    
     galleryList.innerHTML = '';
     page = 1;
-    query = input.value;
     
-    fetchImages(query, page = 1)
-    .then(data => {
-        if (data.data.hits.length === 0) {
+    query = input.value.trim();
+    if (query === '') {
+        return Notify.info("Please, enter the category you are interested in")
+    }
+    
+    
+    try {
+        const data = await fetchImages(query, page = 1)
+            
+        if (data.hits.length === 0) {
             return Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         }
-        Notify.success(`Hooray! We found ${data.data.totalHits} images.`);
-        renderGallery(data.data.hits);
-        // observer.observe(guard);
-        gallery.refresh();
-        
+                
+                Notify.success(`Hooray! We found ${data.totalHits} images.`);
+                renderGallery(data.hits);
+                
+                gallery.refresh();
+                // observer.observe(guard);
 
-        if(data.data.totalHits > 40) {
-            loadMoreBtn.hidden = false;
-        }
-        
-        if (!loadMoreBtn.hidden) {
-            loadMoreBtn.classList.add('load-btn-visible');
-        }
-    })
-    .catch(err => console.log(err))
+                if(data.totalHits > 40) {
+                    loadMoreBtn.hidden = false;
+                }
+                
+                if (!loadMoreBtn.hidden) {
+                    loadMoreBtn.classList.add('load-btn-visible');
+                }
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 async function fetchImages(query, page) {
     const response = await axios.get(`https://pixabay.com/api/?key=${API_KEY}&image_type=photo&orientation=horizontal&safesearch=true&q=${query}&page=${page}&per_page=40`)
-    console.log(response)
-    return response;
+    console.log("page"+page, response);
+    return await response.data;
 }
 
  
@@ -91,12 +103,12 @@ function renderGallery(images) {
 
 
 
-function loadMore() {
-    page += 1;
+async function loadMore() {
     
-    fetchImages(query, page)
-    .then(data => {
-        renderGallery(data.data.hits);
+    try {
+        page += 1;
+        const data = await fetchImages(query, page);
+        renderGallery(data.hits);
 
         const { height: cardHeight } = document
         .querySelector(".gallery")
@@ -109,24 +121,26 @@ function loadMore() {
         
         gallery.refresh();
         
-        console.log("Page " + page)
-        
-        const pages = data.data.totalHits / 40;
+        const pages = data.totalHits / 40;
         if (pages <= page) {
             loadMoreBtn.hidden = true;
             loadMoreBtn.classList.remove('load-btn-visible');
             
-            // observer.unobserve(guard);
-            Notify.info("We're sorry, but you've reached the end of search results.");
+            observer.unobserve(guard);
+            if(data.totalHits > 40) {
+                Notify.info("We're sorry, but you've reached the end of search results.");
+            }
+            
         }
-    })
-    .catch(err => console.log(err))
+    } catch(error) {
+        console.log(error)
+    }
 }
 
-function onLoad(entries, observer) {
-    entries.forEach(entry => {
-        if(entry.isIntersecting) {
-            loadMore();
-        }
-    })
-}
+// function onLoad(entries, observer) {
+//     entries.forEach(entry => {
+//         if(entry.isIntersecting) {
+//             loadMore();
+//         }
+//     })
+// }
