@@ -5,8 +5,7 @@ import axios from "axios";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-
-const searchForm = document.querySelector('#search-form');
+const searchForm = document.querySelector('#search-form')
 const input = document.querySelector('input[name="searchQuery"]')
 const loadMoreBtn = document.querySelector('.load-more');
 const galleryList = document.querySelector('.gallery');
@@ -19,16 +18,16 @@ searchForm.addEventListener('submit', onSearch);
 loadMoreBtn.addEventListener('click', loadMore);
 
 
-let observerOptions = {
-    root: null,
-    rootMargin: '300px',
-    threshold: 0
-}
-let observer = new IntersectionObserver(onLoad, observerOptions);
+// let observerOptions = {
+//     root: null,
+//     rootMargin: '300px',
+//     threshold: 0
+// }
+// let observer = new IntersectionObserver(onLoad, observerOptions);
 
 async function onSearch(evt) {
     evt.preventDefault();
-    
+    // observer.unobserve(guard);
     loadMoreBtn.hidden = true;
     loadMoreBtn.classList.remove('load-btn-visible');
     
@@ -48,19 +47,19 @@ async function onSearch(evt) {
             return Notify.failure("Sorry, there are no images matching your search query. Please try again.");
         }
                 
-                Notify.success(`Hooray! We found ${data.totalHits} images.`);
-                renderGallery(data.hits);
+        Notify.success(`Hooray! We found ${data.totalHits} images.`);
+        renderGallery(data.hits);
                 
-                gallery.refresh();
-                // observer.observe(guard);
+        gallery.refresh();
+        // observer.observe(guard);
 
-                if(data.totalHits > 40) {
-                    loadMoreBtn.hidden = false;
-                }
+        if(data.totalHits > 40) {
+            loadMoreBtn.hidden = false;
+        }
                 
-                if (!loadMoreBtn.hidden) {
-                    loadMoreBtn.classList.add('load-btn-visible');
-                }
+        if (!loadMoreBtn.hidden) {
+            loadMoreBtn.classList.add('load-btn-visible');
+        }
     } catch (error) {
         console.log(error)
     }
@@ -68,7 +67,7 @@ async function onSearch(evt) {
 
 async function fetchImages(query, page) {
     const response = await axios.get(`https://pixabay.com/api/?key=${API_KEY}&image_type=photo&orientation=horizontal&safesearch=true&q=${query}&page=${page}&per_page=40`)
-    console.log("page"+page, response);
+    console.log("page"+page, response.data);
     return await response.data;
 }
 
@@ -125,17 +124,15 @@ async function loadMore() {
         if (pages <= page) {
             loadMoreBtn.hidden = true;
             loadMoreBtn.classList.remove('load-btn-visible');
+            Notify.info("We're sorry, but you've reached the end of search results.");
             
-            observer.unobserve(guard);
-            if(data.totalHits > 40) {
-                Notify.info("We're sorry, but you've reached the end of search results.");
-            }
-            
+            // observer.unobserve(guard);
         }
     } catch(error) {
         console.log(error)
     }
 }
+
 
 // function onLoad(entries, observer) {
 //     entries.forEach(entry => {
